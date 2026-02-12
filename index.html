@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Artículos Torre A</title>
+    <style>
+        :root {
+            --color-bg-primary: #fcfcf9;
+            --color-surface: #fffffe;
+            --color-text-primary: #13343b;
+            --color-text-secondary: #626c71;
+            --color-primary: #21808d;
+            --color-primary-hover: #1d7480;
+            --color-border: rgba(94, 82, 64, 0.2);
+            --color-card-border: rgba(94, 82, 64, 0.12);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg-primary: #1f2121;
+                --color-surface: #262828;
+                --color-text-primary: #f5f5f5;
+                --color-text-secondary: #a7a9a9;
+                --color-primary: #32b8c6;
+                --color-primary-hover: #2da6b2;
+                --color-border: rgba(119, 124, 124, 0.3);
+                --color-card-border: rgba(119, 124, 124, 0.2);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--color-primary);
+            font-size: 2rem;
+        }
+
+        .search-section {
+            background: var(--color-surface);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            transition: border-color 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1);
+        }
+
+        button {
+            padding: 12px 24px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 6px 12px;
+            background: rgba(33, 128, 141, 0.1);
+            border: 1px solid var(--color-primary);
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-tag:hover {
+            background: rgba(33, 128, 141, 0.2);
+        }
+
+        .filter-tag.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .results-info {
+            padding: 15px;
+            background: var(--color-surface);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--color-card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .table-container {
+            background: var(--color-surface);
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--color-card-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: var(--color-primary);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        tr:hover {
+            background: rgba(33, 128, 141, 0.05);
+        }
+
+        .photo-cell {
+            text-align: center;
+            width: 100px;
+        }
+
+        .photo-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .photo-link:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .code-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(33, 128, 141, 0.1);
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--color-primary);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--color-surface);
+            border-radius: 12px;
+            border: 1px solid var(--color-card-border);
+        }
+
+        .no-results svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .no-results h3 {
+            margin-bottom: 10px;
+            color: var(--color-text-primary);
+        }
+
+        .no-results p {
+            color: var(--color-text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: white;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close:hover {
+            background: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Catálogo de Artículos Torre A</h1>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, código, descripción, tipo o marca...">
+                <button onclick="searchProducts()">Buscar</button>
+                <button onclick="clearSearch()" style="background: #626c71;">Limpiar</button>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-tag active" onclick="filterByType('all')">Todos</div>
+                <div class="filter-tag" onclick="filterByType('MUEBLE')">Muebles</div>
+                <div class="filter-tag" onclick="filterByType('MISCELANEO')">Misceláneos</div>
+                <div class="filter-tag" onclick="filterByType('DECORATIVO')">Decorativos</div>
+                <div class="filter-tag" onclick="filterByType('ELECTRÓNICO')">Electrónicos</div>
+            </div>
+        </div>
+
+        <div class="results-info" id="resultsInfo" style="display: none;">
+            <span class="results-count" id="resultsCount">0 resultados encontrados</span>
+            <span id="searchTerm"></span>
+        </div>
+
+        <div id="tableContainer"></div>
+    </div>
+
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">✕ Cerrar</button>
+            <img id="modalImage" src="" alt="Fotografía del artículo">
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            {name: "ALFOMBRA MODELO 1", description: "COLOR CAFE CON LINESAS AZULES,BLANCAS Y GRISES, FRENTE 3.09 PROF 2.46 METROS", code: "ALF1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.11.54-PM.jpeg?id=6pkXek&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZwa1hlayIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNzIyN30.v5ha_35NKVPkZVwzuK754gpkVPRV6RbP-bqZ3UNc-wI&signature=4ead7f16057b3c25fe47ab3858c212e0457c307a53f94e0c6bea2393ab84ec9c", type: "MISCELANEO", brand: ""},
+            {name: "ALFOMBRA MODELO 2", description: "COLOR CAFE CON GRIS Y PUNTOS BLANCOS, FRENTE 3.04 PROF 2.50 METROS", code: "ALF2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.03.35-PM.jpeg?id=jkMOPE&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImprTU9QRSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNzMyNn0.uGMReJTSibpL4qUPu5SZfbnlJ5xvN8uCR5PrdaMjDIE&signature=3e5b60c9f90f65425d8962bd4dc23db467e703888eb3a122ee804101c280b418", type: "MISCELANEO", brand: ""},
+            {name: "ALFOMBRA MODELO 3", description: "COLOR CAFE CON GRIS Y PUNTOS BLANCOS, FRENTE 2.45 PROF 1.96 METROS", code: "ALF3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-5.43.52-PM.jpeg?id=QO055l&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlFPMDU1bCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1MzYxOX0.Irm3LcP1ch6eBhp9XRKZANR1mbSYVjmIKfXH4I0vcQI&signature=e6743067b4321ec114821cd043054091a4ae93cc6c7a2a55d939473761331c89", type: "DECORATIVO", brand: ""},
+            {name: "ALFOMBRA MODELO 4", description: "COLOR ROSA,AZUL,BEIGE, ALTO 1.00 FRENTE 1.00 METROS", code: "ALF4", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-5.47.17-PM.jpeg?id=1pE7Mg&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFwRTdNZyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1MzgyMX0.rTZEddsfup3CM7psNUEPEkV8r3Rhge4pvu32iScAqc4&signature=68769ea048a4f194a18855285d66022c1efc1c59bc47069ca39547a8cdc50aaf", type: "DECORATIVO", brand: ""},
+            {name: "ALMOHADA", description: "COLOR BLANCA FRENTE 0.70 ALTO 0.50", code: "ALMH", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.23.41-PM.jpeg?id=AjJk1k&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkFqSmsxayIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNDM0NH0.w6k5JPNBAzW02FR48NVHJRUs0S50fJY9NqrrhJujk-4&signature=63bbf714fc218a1c65c8eb518d56c7b1f445e81bf06f3a91db0a245532e5d568", type: "MISCELANEO", brand: ""},
+            {name: "ASIENTO DE BEBE", description: "COLOR BLANCA CUADRADA, ALTO 0.38 PROF 0.29 FRENTE 0.34 METROS", code: "ABB", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.52.24-PM.jpeg?id=vd2jX8&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZkMmpYOCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzOTY5NX0.1lpiPey7IqIgmdBR3Lj6pifQGRPwFmSaFyNrd8y6Uuc&signature=8e9ab7aa83ee7ef4e7910a678a5c155cee6d679b5d5c17b5b63c8a1e22b7db5f", type: "MUEBLE", brand: ""},
+            {name: "ATOMIZADOR MULTIUSOS", description: "COLOR BLANCO DE PLASTICO Y PARTE SUP AZUL ALTO 0.28 DIAMETRO 0.08 METROS", code: "ATM", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.29.21-PM.jpeg?id=vdBkBl&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZkQmtCbCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNDc3NX0.ZK56zv3RqETU4q4SN8VNCSvaZQm2_Eivgt5O0b-vDok&signature=66b832f926eb440257fd6ea5edd4a04f2d4cc79d6961fbc38aacc165d293dd29", type: "MISCELANEO", brand: ""},
+            {name: "BANDEJA MODELO 1", description: "CUADRADA COLOR NEGRO, ALTO 0.04 FRENTE 0.38 PROF 0.34 METROS", code: "BDJ1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.50.50-PM.jpeg?id=lMAJKN&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxNQUpLTiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNjQwM30.k1a7KoC89RBtdyT2o-aRWGkJDT8ZC7Zfe-eAHD36rGY&signature=6d46ca5b8e80d2c063231a413c9e3abaf46d78530b33f8a23c4c0465a1c92a80", type: "MISCELANEO", brand: ""},
+            {name: "BANDEJA MODELO 2", description: "COLOR NEGRO CON 4 DIVISIONES, ALTO 0.04 PROF 0.18 FRENTE 0.14 METROS", code: "BDJ2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.01.30-PM.jpeg?id=kkAMvR&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImtrQU12UiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNjU0NX0.EtFWOQRSGh1i0q9RFmr3LlQXmqI8UyhSBKDshQuBwgw&signature=86bfd108b367b663f370f0d5c9436a8c12e6b36bcdffddfca0814866283aa008", type: "MISCELANEO", brand: ""},
+            {name: "BASE DE ESCRITORIO", description: "SOLO ESTA LA BASE DEL ESCRITORIO COLOR NEGRO FRENTE 1.14 PROF 0.56 ALTO 0.64 METROS", code: "BESC", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.17.24-PM.jpeg?id=pkAlGZ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InBrQWxHWiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNzUzM30.z2NfxrNJlAbjcFi7WLa6YpDozEerIicSoFAycotvYrI&signature=23d8dba68f73697d4af529a689939d6bef04206995defc1a16faba79ab609a00", type: "MUEBLE", brand: ""},
+            {name: "BOTE CON EXTITOR", description: "BOTE PLATEADO EXTINTOR ROJO, ALTO 0.62 DIAMETRO 0.24 METROS", code: "BEX", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-7.29.16-PM.jpeg?id=lMRRov&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxNUlJvdiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1OTg2OX0.BvpqPGNj7ja-ahso1C1SVduA8_KHPE2zaiLidw0fqUI&signature=089a12f810536d96c23cec01044850503e600cccbde1f17cc0fe231684a3c69e", type: "MISCELANEO", brand: ""},
+            {name: "BOTE DE BASURA", description: "COLOR NEGRO CON PEDAL, ALTO 0.26 DIAMENTRO 0.22 METROS", code: "BB2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-8.44.02-AM.jpeg?id=7pDjOR&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdwRGpPUiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgyMTA3NX0.57pqowwDn94yIVmsFTE3D22f8I3mnW8oXCMHR_yy73c&signature=c03840379e8be476c5d3dc2f016fadb981a0ebfb4a75298758b505268c04a81b", type: "MISCELANEO", brand: ""},
+            {name: "BOTE DE BASURA", description: "COLOR PLATEADO CON PEDAL, ALTO 0.26 DIAMETRO 0.20 METROS", code: "BB1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-8.40.32-AM.jpeg?id=z1zgbg&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InoxemdiZyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgyMDk2OH0.RoNU4iQ3tHxNSYKdJTELdfNItUxLCl3Uzg-ew3Z9Iqk&signature=552413fbad56b0fbc7d171c765449810fc952b77bd23610ed196c8267a70a724", type: "MISCELANEO", brand: ""},
+            {name: "BOTE DE PLASTICO", description: "CAPACIDAD 710ML COLOR BLANCO ALTO 0.20 DIAMETRO 0.08 METROS", code: "BTPC", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.26.40-PM.jpeg?id=NRVklN&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik5SVmtsTiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNDU1OH0.ucSNg5nV4XzG7HT-jIyCKT5edfeyZIWj4Ovug-NGs4A&signature=3a591e34828ff8550ec24a0de1cdedc3dbd8b8167d805e66b67079407644d0af", type: "MISCELANEO", brand: ""},
+            {name: "BURO MODELO 1", description: "COLOS CHOCOLATE ESQUINAS CURVAS,1 REPISA 1 CAJON,FRENTE 0.51 ALTO 0.57 PROF 0.40 METROS", code: "BR1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-11.58.13-AM.jpeg?id=5pkJgo&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVwa0pnbyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMjc1NX0.a8KeuIzxoGGB8jyi3suvkRYvozXgfRxMks9OuTdRJCw&signature=e225688cc4cf987eda9f461f3f3bdc2ccf91bce056fa194c6616209f5be8e369", type: "MUEBLE", brand: ""},
+            {name: "BURO MODELO 2", description: "TIPO METAL NEGRO DE 3 PATAS, ALTO 0.50 DIAMETRO 0.41 METROS", code: "BR2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.08.11-PM.jpeg?id=lMApeo&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxNQXBlbyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMzM1Mn0.jvYTih4jSnZ2wLd9rEB6O2UQSPzFFGzj8FXmvGtsFQw&signature=61e2d4e2a72d70a285c38e0540cf3eb13c61a4b97e23be822e0b689d5f33bce0", type: "MUEBLE", brand: ""},
+            {name: "BURO MODELO 3", description: "TIPO MADERA COLOR CAFE, ALTO 0.47 PROF 0.29 FRENTE 0.32 METROS", code: "BR3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.26.30-PM.jpeg?id=Ka0MpX&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkthME1wWCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NjAxMX0.0oOW-ulw4nTZ7tDSGjwNQYTvWL5KzZdefDLiQiRjDZA&signature=f64e906ca1d97af82c85de1456e4ed2644a50a74047f3dd066ddb2114b6e9340", type: "MUEBLE", brand: ""},
+            {name: "BURO MODELO 4", description: "MARMOLEADA CON BASE CONICA NEGRA, ALTO 0.43 DIAMETRO 0.33 METROS", code: "BR4", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.43.13-PM.jpeg?id=pkVLaV&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InBrVkxhViIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NzEwNn0.mYEkfz02EworZxR73JKsBhTVXfRPi6KZvKcC8tm-Zj0&signature=bcc47812bb93f8b5a43d24bbe428571681a4ed971c6326862f8e47d0f88816ee", type: "MUEBLE", brand: ""},
+            {name: "BURO MODELO 5", description: "MARMOLEADO COLOR BEIGE CON BASE EN T, ALTO 0.56 DIAMETRO 0.43 METROS", code: "BR5", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-7.12.37-PM-1-.jpeg?id=rkEElX&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InJrRUVsWCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1ODg1NX0.SFxM5l-VyiTVZEJmcNbg9hyYS7JM4UkQRen713Dt2o0&signature=8f2848e86022149f80c6e406fb7874b2984c8072f12318428885b48c123fee1d", type: "MUEBLE", brand: ""},
+            {name: "BURO MODELO 6", description: "TIPO MADERA CUADRADO COLOR BEIGE, PROF 0.38 FRENTE 0.38 ALTO 0.56 METROS", code: "BR6", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-7.15.44-PM.jpeg?id=1pEE2l&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFwRUUybCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1OTAzOX0.Qe130q-XNxKLH6yQB-VbChH1FnNGbDlWA-GbR-4GkbA&signature=0880e17287cfffef3b8dd63b180a8e09c06c7775163e49944dea73e7f735ee7a", type: "MUEBLE", brand: ""},
+            {name: "BURO MODELO 7", description: "CILINDRICO MARMOLEADO CAFE Y BEIGE, ALTO 0.47 DIAMETRO 0.36 METROS", code: "BR7", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-7.17.56-PM.jpeg?id=aaGGKB&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFhR0dLQiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1OTEwNn0.yCdDnbjbVCSjphRsNQ-42gxw4kyKXcZBbfzBR4MjKWM&signature=37ed122d2b6dde788b7a47fa20eecc2ceb37ffc3213d272818429344c39af30c", type: "MUEBLE", brand: ""},
+            {name: "CAJONERA MODELO 1", description: "TIPO MADERA COLOR NEGRO CON 3 CAJONES, ALTO 0.85 FRENTE 0.90 PROF 0.43 METROS", code: "CJN1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.27.56-PM.jpeg?id=Ka0MxV&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkthME14ViIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NjEwMH0.GocJQ-TFromfFG7ju8WmWIBNZCFzpB2qSg8I1SLcem0&signature=19dac596dcd9ffb91c944d94d3b49a123207736b34089f2f091c47671c7db337", type: "MUEBLE", brand: ""},
+            {name: "CAJONERA MODELO 2", description: "TIPO MADERA COLOR NEGRA 2 PUERTAS 3 REPISAS", code: "CJN2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.34.29-PM.jpeg?id=GQ0rXQ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkdRMHJYUSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NjUzNn0.VlUL4SVsgG8wJraxZzUhruHfraJdpE7GNudom2FSlO4&signature=6d3afd333b112ad679088a3191c20dca3b52e309d8565ce75aec5f903255d9fe", type: "MUEBLE", brand: ""},
+            {name: "CAJONERA MODELO 3", description: "COLOR CAFE CON ESQUINAS CURVAS 2 PUERTAS 2 CAJONES Y 2 REPISAS, ALTO 0.73 FRENTE 1.56 PROF 0.51 METROS", code: "CJN3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-7.19.06-PM.jpeg?id=gk44Od&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImdrNDRPZCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1OTI1M30.d1R61iY_UMAFsi-HCTjGMBZkg1qbRmOtimXNa8cYDqo&signature=7c44763dc71a455df9394c50e51a6f1f2ad7232d5ebd80b04446274ee00fd3fd", type: "MUEBLE", brand: ""},
+            {name: "CALEFACTOR", description: "COLOR GRIS, ALTO 0.27 PROF 0.10 METROS", code: "CF", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.39.23-PM.jpeg?id=2Dk0zg&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJEazB6ZyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNTQxMH0.NnCkiY30O2uH1ppQlC2xv9Hlc-GKLxebE5H-zCulHuE&signature=7599587e2b0b5fa6967222ca0a2a32a91732594dee4b9774e37c932762839ae7", type: "ELECTRÓNICO", brand: "DACE"},
+            {name: "CANTARITO", description: "DE BARRO, ALTO 0.12 DIAMETRO 0.08 METROS", code: "CANT", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-4.13.17-PM.jpeg?id=GQ09gj&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkdRMDlnaiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0ODA1Nn0.9t239Fdvc4Uo4X8MkwNVjd7ucILqHooC98htLCGDBX4&signature=feab99a3b6753f16ecd86ed9ea9046febf1b3c50cacda1b75f132f9d6af247ea", type: "MISCELANEO", brand: ""},
+            {name: "COLCHON KING", description: "MAYOR A 2MTS", code: "CCHK", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.35.29-PM-1-.jpeg?id=1pEWAl&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFwRVdBbCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MjMzMn0.bR46Za4VFqFQnI_Z1rLyuOD23_E665mUolLUQvd8M4s&signature=957ecd8d79f49c02897a375e52e20d8c1b9e37ec056e66012420ce04b1ac3310", type: "MUEBLE", brand: ""},
+            {name: "COLCHON QUEEN", description: "MENOR A 2MTS", code: "CCHQ", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.35.29-PM.jpeg?id=okOb4b&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im9rT2I0YiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MjI0N30.cxBq4v_-9AeVKct718_eRq37IkT1SEIy3FZ0J4d1WnQ&signature=7d0aa29ff83ae226eebe33add6d8e0921a5e5ad55d0f2a5c805afedeb397f8ac", type: "MUEBLE", brand: ""},
+            {name: "COPA", description: "DE VIDRIO, DIAMETRO 0.06", code: "COP", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-3.31.16-PM.jpeg?id=DZeK7E&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkRaZUs3RSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0NTUxMX0.OojTKgIxAkA2c4Nl-PPH_ZtCWrFOT9qu4XEFdhquToo&signature=033e6eb4e3cb3c5c61a74c00b43781728ac15c6b67cf2329db0e4d6444b62691", type: "MISCELANEO", brand: ""},
+            {name: "CUADRO DECORATIVO MODELO 26", description: "COLOR MOZTASA CON TEJIDO AZUL,ROSA,NARANJA Y AMARILLO, ALTO 0.60 FRENTE 0.60", code: "CUD26", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-3.08.38-PM.jpeg?id=ZZJ8ly&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlpaSjhseSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0NDE1OX0.lo32sAYDetPCpFMI7cCXnfy2MDU5JsUWO9R2Jq1WWvY&signature=1041dde1514113f1a3e03848f03668086d252ad3243c7741daa90e8ae32016c3", type: "DECORATIVO", brand: ""},
+            {name: "CUADRO DECORATIVO MODELO 27", description: "COLOR NARANJA CON TEJIDO ROSA,MORADO,AZUL Y AMARILLO, ALTO 0.60 FRENTE 0.60", code: "CUD27", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-3.08.56-PM.jpeg?id=z1ej08&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InoxZWowOCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0NDMwN30.B-aA5_26nUpkCpJ8MQwsmthHVdO-rTXqJ1Uo0UAAlCg&signature=0017a39ece5b8acac1b421919d3888760ed183f6982282382c0da9c694528d80", type: "DECORATIVO", brand: ""},
+            {name: "CUADRO DECORATIVO MODELO 28", description: "NEGRO CON MEDIO CIRCULO BLANCO, ALTO 1.20 FRENTE 0.91 PROF 0.06 METROS", code: "CUD28", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-4.19.52-PM.jpeg?id=okOeqN&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im9rT2VxTiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0ODQyMH0.YBKdSFBl897KJdwoJtvbhSiUfWx57IniZawEWUvet_g&signature=b265b12ed9ad4c2dac28393ee4cebb7c7bf8dfd85e69cd706830344c2df2ff02", type: "DECORATIVO", brand: ""},
+            {name: "CUBETA", description: "CUBETA VARIOS COLORES, ALTO 0.27 DIAMETRO 0.20 METROS", code: "CBT", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-3.25.56-PM.jpeg?id=xlZreG&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhsWnJlRyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0NTIxMn0.P7dLvEVXCr2Y2wQgaAdoPfigeFwwEW2rGf9wXmB1ybY&signature=a164d874e2d2cf75f620e630183f859019ff1676527777522e731992f1eccefb", type: "MISCELANEO", brand: ""},
+            {name: "CUBRE COLCHON KING", description: "COLOR BLANCO", code: "CUBCK", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-09-at-3.31.29-PM.jpeg?id=PG0dB1&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlBHMGRCMSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MTU0OX0.bY4y3GGbm70eIkx3jIok2czY3rKExdvMMam7fIRWYnY&signature=4b9a662c17c09c318bc87488fbdb3440daacc1d077cc7e491694226bdaa85499", type: "MISCELANEO", brand: ""},
+            {name: "CUBRE COLCHON QUEEN", description: "COLOR BLANCO", code: "CUBCQ", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-09-at-3.31.29-PM.jpeg?id=2DrEkM&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJEckVrTSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MTQwNn0.113Y2Z7yG6LHKcoEuTTKqJglKfUESjAAEN69BWCtMRs&signature=b7d97301b9a4d2e9fc75be6ca0232fa38e7dd8605e710b5a2440405e53f4003c", type: "MISCELANEO", brand: ""},
+            {name: "DECORACION DE PARED", description: "MEDIO FLORERO COLOR BEIGE TIPO MARMOL, ALTO 0.56 FRENTE 0.40 PROF 0.19 METROS", code: "DECP", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-4.27.27-PM.jpeg?id=z1eMK8&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InoxZU1LOCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0ODk4MH0.bK97RIyhAmBeqDvgumXOG1sWhSEvx9Xk_Gypok0Qnfk&signature=efd9b2ef9c1f7b33f589cd06433fc94eb85a0b2c4ff451abb44faf90cea0a3fd", type: "DECORATIVO", brand: ""},
+            {name: "DISPENSADOR", description: "DE PLASTICO, FRENTE 0.06 ALTO 0.015M", code: "DISP", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-9.20.11-AM.jpeg?id=lMA1zv&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxNQTF6diIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgyMzQ1Mn0.RrE7egleMGXRfJ8VyjTO8wEgUpeDYp5dMLXvmqML2Ag&signature=8cf5e6396e782a1714ff9e16d2f4f379326f393b4c05b29bcc7e315ea03b3f03", type: "MISCELANEO", brand: ""},
+            {name: "DISPENSADOR JABON DE TRASTES", description: "COLOR BLANCO DE PLASTICO, ALTO 0.16 DIAMETRO 0.07 METROS", code: "DISPJT", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.34.04-PM.jpeg?id=RV4pB9&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlJWNHBCOSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNDkxOH0.WMmysPQkfhGXWsNF7MGHJrU5YgscXF1OkgDeCKoIkU4&signature=63c5c887399b87c1c88941838c0985c73440a6447d26d22d3593cda1efbb4168", type: "MISCELANEO", brand: ""},
+            {name: "DISPENSADOR JABON MANOS", description: "COLOR BLANCO DE PLASTICO, ALTO 0.16 DIAMETRO 0.07 METROS", code: "DISPJM", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.35.22-PM.jpeg?id=B21Ne7&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkIyMU5lNyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNTE0OX0.oOeeaKsU0OBCiD19AV40wvkiAMAWgHZlCeOLg78Cp34&signature=9fb8840580b648f8e30c5c74504ccecc4a3577c708b1b1b933dbce6e37036751", type: "MISCELANEO", brand: ""},
+            {name: "DISPENSADOR PAPEL HIGIENICO", description: "TIPO ACERO COLOR NEGO, 0.18 METROS", code: "DISPPH", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-8.38.13-AM.jpeg?id=AjJaDB&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkFqSmFEQiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgyMDc5NH0.qOfpB37hHjr0RIBsv1iWQbidLeiRqNb0fmPmGmp-8hc&signature=6b99f3675d8e9d17c04246f4268b72f4714194cfd9d00f1a9669c485455af0f5", type: "MISCELANEO", brand: ""},
+            {name: "EDREDON KING", description: "COLOR BLANCO", code: "EDRK", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.28.25-PM-1-.jpeg?id=z1exda&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InoxZXhkYSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MTg3MH0.cd4_7Dj1Qkt4RCUqJeM9Up8smwl2d6fq4SQB7a9554w&signature=a15b6649a8cb9d65a8439ad3e4f76c22306f1d3a8d4a65bb27710ac61bf91558", type: "MISCELANEO", brand: ""},
+            {name: "EDREDON QUEEN", description: "COLOR BLANCO", code: "EDRQ", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.28.25-PM.jpeg?id=X2qxzg&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlgycXh6ZyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MTczOX0.2CnhcVgAMlQKFGp-3edUbHLbyF8wZmLaD4PpVNBhcZU&signature=9c38ea2d59461b874e4dee9221f6164d1991d76eb90ce7a74f8c9ce57c744ebc", type: "MISCELANEO", brand: ""},
+            {name: "ESCOBA", description: "VARIOS COLORES, ALTO 0.15 FRENTE 0.24", code: "ESCB", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-4.06.30-PM.jpeg?id=Ka05BX&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkthMDVCWCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0NzY4OH0.lEkhJgjcC0vRJALYHv6YfUVPsWPlcnQdFgLFApb2XoQ&signature=c23b682b14c8a73f8883d789ee2db030add2baaee0aff004d1dafeac2b6ba547", type: "MISCELANEO", brand: ""},
+            {name: "ESCRITORIO", description: "COLOR NEGRO TIPO MADERA 1 REPISA 4 PATAS, FRENTE 1.32 ALTO 0.76 PROF 0.59 METROS", code: "ESC", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-11.59.30-AM.jpeg?id=GQ1ZOo&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkdRMVpPbyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMjg4OX0.7XnhXukKr8XdpLaMvCNjaoQO-eyUIJ2SywWQu9NTRKY&signature=9424c8aa1b793d822f2711b5c07a9db080de7df8b095746a7f47f16174d2ab77", type: "MUEBLE", brand: ""},
+            {name: "ESCULTURA MODELO 1", description: "BASE CUADRADA BLANCA Y FORMA IRREGULAR NEGRA, ALTO 0.30 FRENTE 0.02 PROF 0.14 METROS", code: "ESCU1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.15.29-PM.jpeg?id=kkZaD1&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImtrWmFEMSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MDk1MX0.J6C-kwboW6AGsAwvg1dEqjJToKrr66Nb250X37V53fI&signature=851436c6b3e3e7075b4feeba725ba263269b58997392dbf7fbd9ab5c3e084400", type: "DECORATIVO", brand: ""},
+            {name: "ESCULTURA MODELO 2", description: "BASE NEGRA,CIRCULOS NEGROS CON MACRAME, ALTO 0.68 FRENTE 0.35 PROF 0.13 METROS", code: "ESCU2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.16.04-PM.jpeg?id=DZe4kb&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkRaZTRrYiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MTE2Mn0.-v6EzXVjRRSKCwPyMQnV0ruOINoa52OlMGZliFzXrcs&signature=633d66c6500cbab6b51e9d40b2da94f4ed735da14589b6c1cdb5f092d03666cd", type: "DECORATIVO", brand: ""},
+            {name: "ESCULTURA MODELO 3", description: "FORMA DE RANA COLOR CHOCOLATE, ALTO 0.30 FRENTE 0.28 PROF0.07 METROS", code: "ESCU3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.45.40-PM.jpeg?id=M75OK0&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik03NU9LMCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NzI0MX0.XNf8D0rkeRXJHhYTFosTPCBt3eS2COcci5TtGF3Kzhg&signature=e19e4123132b9aa023df0eb946f1905238910fa131bf1890f3bad6bb1e6b89bb", type: "DECORATIVO", brand: ""},
+            {name: "ESCURRIDOR", description: "TIPO METAL COLOR PLATEADO CON GOMAS GRISES,FRENTE 0.53 ALTO 0.33 METROS", code: "ESCRR", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-5.03.16-PM.jpeg?id=pkVDM1&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InBrVkRNMSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1MTExMH0.yMF6PQYjF_b0UitPeffK2DOhB0BzmD_x0YrFTYW3BnY&signature=6b456111ac55c1895331f4f96965126ec174f72711fc6fc5a93ea75a727b45db", type: "MISCELANEO", brand: ""},
+            {name: "ESPEJO DE BAÑO 5", description: "CON LUZ OVALADO, ALTO 0.99 FRENTE 0.51 METROS", code: "ESPB5", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.14.40-PM.jpeg?id=8ReKAl&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhSZUtBbCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NTM0NH0.Rqqd_GweQ93pjXZhFnO7Y_KTNkI7yG1PBbwsFuAzy6s&signature=f71910a34d720c14836c487b491f99c341ab596aed0510b5c76fc23ee9a0293c", type: "MISCELANEO", brand: ""},
+            {name: "ESPEJO DE BAÑO MODELO 1", description: "CIRCULAR, DIAMETRO 0.67 METROS", code: "ESPB1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-8.47.33-AM.jpeg?id=jkMpPQ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImprTXBQUSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgyMTQyMn0.fZk50jrJnejsOnC3D1B_NX2mwD00jxJl6hMZc7r_8UU&signature=f18d01ad539f2ba4ac61a5929d3bd137b453c9cddefbc5674e79673ca6c2ab79", type: "MISCELANEO", brand: ""},
+            {name: "ESPEJO DE BAÑO MODELO 2", description: "CIRCULAR, DIAMETRO 0.74 METROS", code: "ESPB2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-8.52.21-AM.jpeg?id=9o1a2Y&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjlvMWEyWSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgyMTYwNX0.bROwI2zcFHePxdzMghO-yMH1G-KnfocXc49BjA-iEA4&signature=f30296f4af76f254793336dfb641b80ae95b249d9cb60db7ba1ff827c5b579bc", type: "MISCELANEO", brand: ""},
+            {name: "ESPEJO DE BAÑO MODELO 3", description: "CON LUZ OVALADO HORIZONTAL, FRENTE 1.30 ALTO 0.70 METROS", code: "ESPB3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.05.17-PM.jpeg?id=xlZpJG&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhsWnBKRyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NTAwOH0.Xwb9AkkdaOcKQPWgTtNiqJjQg5RgUGei2LyC5JrFyeQ&signature=89fffca22327ed5586d012149682c03c5053db2d1875af8325ff3f4c836873c0", type: "MISCELANEO", brand: ""},
+            {name: "ESPEJO DE BAÑO MODELO 4", description: "CON LUZ CIRCULAR, ALTO 0.80 FRENTE 0.60 METROS", code: "ESPB4", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.11.37-PM-1-.jpeg?id=kkZyWd&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImtrWnlXZCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NTE5MX0.BjgWvsl7T52fRtHJsivIDtZ5z7O-9oVosFc2lbfk1T8&signature=f99a231958813305a64cd30ef8ecbb157734106a51144b1c7414528a7ad10c84", type: "MISCELANEO", brand: ""},
+            {name: "ESPEJO MODELO 1", description: "MARCO DORADO, DIAMETRO 0.81 METROS", code: "ESP1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-11.23.26-AM.jpeg?id=NRVjlG&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik5SVmpsRyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMDg4N30.O-v0aBUuQ5JVrPvgBeY5Itq-I8HwDnDgQKZD10Jw76Q&signature=7c9b0f32c298c699561c93489b38287b28bfd6c917eba26bae31a6ab5c918a7a", type: "MISCELANEO", brand: ""},
+            {name: "ESPEJO MODELO 2", description: "COL ORILLA SOLA, DIAMETRO 0.74 METROS", code: "ESP2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-5.42.47-PM.jpeg?id=ZZJ690&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlpaSjY5MCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1MzQwNn0.clKfCAOO29pkOSzQf9JIYN4bBk7rlO0pas-K240S0cs&signature=1064a0d8326e68588a01757396b9aa7c30b4654a5ee33f79e512c02743c0c86c", type: "DECORATIVO", brand: ""},
+            {name: "ESPEJO MODELO 3", description: "CIRCULAR CON MARCO NEGRO, DIAMETRO 1.02 METROS", code: "ESP3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.33.43-PM.jpeg?id=dkPY2y&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRrUFkyeSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NjQ0N30.EqrSroo-axXBn6yBLcGm-mPkjoatMiA5cwfsvKud9ao&signature=bdf7316902bfb019aaa8ad99b5ec57db565ae5aaf303c15d4a61e79f8380daee", type: "MISCELANEO", brand: ""},
+            {name: "ESPONJA", description: "MITAD AMARILLA MITADA VERDE, ALTO 0.12 FRENTE 0.07 PROF 0.02", code: "ESPNJ", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-3.22.00-PM.jpeg?id=6pxLqB&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZweExxQiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0NTA4NX0.hlySrcgIznOMiYQrViNwrzwT_AZ6ysJouzfjD50arNA&signature=8d1f98081be78437f0644ef39cab796af1801d9de02e2ab40915b693c88349d2", type: "MISCELANEO", brand: ""},
+            {name: "FLORERO MODELO 1", description: "FORMA IRREGULAR COLOR NEGRO, ALTO 0.50 DIAMETRO 0.12 METROS", code: "FLR1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-11.36.03-AM.jpeg?id=M7O4VM&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik03TzRWTSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMTQyN30.w1718zxMNrANJkuw-PrXGeKFZ0C5DjBlrbngZBd5EYI&signature=9127802744a7fe05810ca268b237664462ab1ec4ff66fd0a166b865550ed499a", type: "DECORATIVO", brand: ""},
+            {name: "FLORERO MODELO 2", description: "COLOR CAFE CON PUNTOS NEGROS TIPO PORCELANA, ALTO 0.38 PROF 0.13 FRENTE 0.19 METROS", code: "FLR2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.44.50-PM.jpeg?id=RVLW4p&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlJWTFc0cCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MjcxN30.Uqtqeo-BCwr_biLyjBjupOjk3zhdBHMQl65IlK4R_wA&signature=8691d2aad4bbf10fd336c6d20ec7f54766d9c004cf4fc7d91569954f0f43b13a", type: "DECORATIVO", brand: ""},
+            {name: "FLORERO MODELO 3", description: "COLOR CAFE CON PUNTOS NEGROS TIPO PORCELANA, ALTO 0.26 PROF 0.10 FRENTE 0.16 METROS", code: "FLR3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.45.47-PM.jpeg?id=Oo0Q8M&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik9vMFE4TSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MjkzMn0.etm0zPYY4pE0wuWOPL_XL1raQ87FzzgXbvHC1e3THB8&signature=4170d10d5f35c43496258b7ca1a33f6965977eab119ce16415534c53665bed6d", type: "DECORATIVO", brand: ""},
+            {name: "FLORERO MODELO 4", description: "DE BARRO, ALTO 0.34 PROF 0.33 FRENTE 0.33 METROS", code: "FLR4", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.53.26-PM.jpeg?id=1pEWgQ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFwRVdnUSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MzI4MX0.4dYh9eTioJYodCI2nv1JyNf0rpxw3RzjqPqKpNgzfrc&signature=9c0356f47b873834dd38c433713d54f65a055076669c32d42b2b96011c980ecb", type: "DECORATIVO", brand: ""},
+            {name: "FLORERO MODELO 5", description: "COLOR CAFE TIPO CERAMICA, ALTO 0.23 DIAMETRO 0.16 METROS", code: "FLR5", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.55.48-PM.jpeg?id=Ka0p27&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkthMHAyNyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MzM2Nn0.0QgaNUBjDUel_CxXHHGOWJYScSS6LM2SJlJkllcL5oQ&signature=3975452e7c318872de5ccc7f3abbd8e6e59eee06441297196a6e15daca713743", type: "DECORATIVO", brand: ""},
+            {name: "FLORERO MODELO 6", description: "DE VIDRIO FORMA CILINDRICA, ALTO 0.25 DIAMENTRO 0.10", code: "FLR6", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-4.15.09-PM.jpeg?id=xlZM79&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhsWk03OSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0ODE5Nn0.se6H2mcgd_ihwLhpNTyXtUNdqQHETlwlI3ObobE1oLg&signature=a2be66250b5d07ed6a511b2b053bd692ad3de0a33dce97780653b8094f6d93fa", type: "DECORATIVO", brand: ""},
+            {name: "FORRO DE ALMOAHADA", description: "COLOR BLANCA CON CIERRE", code: "FRALMH", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.23.26-PM.jpeg?id=8Rk0g5&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhSazBnNSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzODA2MX0.UW_flruo6-Z4vzd7uC2VDSvGMdiwSCD0apD5FezPwWU&signature=90ecdc5e090af70db77b317344ccdfd1f6047f0b47b6163d69f886df46f5d4ee", type: "MISCELANEO", brand: ""},
+            {name: "FRECOGEDOR MODELO 2", description: "COLOR BLANCO, FRENTE 0.27 PROF 0.31 METROS", code: "REC2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-3.59.44-PM.jpeg?id=okOey5&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im9rT2V5NSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0NzM1NH0.QlgnIPf__4uyy3GuMlLOY4_bHQ2oJ9AsQgLreVEaN9Y&signature=f584e71059fd15547bda3f8a97550669f57e303d8f3348d0f0a716ec6f93488f", type: "MISCELANEO", brand: ""},
+            {name: "FUNDA DE ALMOHADA", description: "COLOR BLANCA", code: "FALMH", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.19.03-PM.jpeg?id=L6GQyp&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ikw2R1F5cCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNzkxN30.WKHF0j2nGx5GXM0eNjdECCQTBw1Xkg4Jfie9Tjh2RMI&signature=0de37d31e6977f87825a7e68e87b9f2e19ca1145995d0ea7958a2612e3e54c7f", type: "MISCELANEO", brand: ""},
+            {name: "GANCHOS DE ROPA", description: "TIPO MADERA, COLOR CAFE", code: "GNC", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-11.38.23-AM.jpeg?id=okBP1V&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im9rQlAxViIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMTUzNX0.G2KpzHT_p97z6qZw3Yg0Bs4_9Vr1wQuGvwBOG8C-d5g&signature=eef17b9328b31c51b0a93edf73d5d575775c1c43d0263c949809955d166a6fbe", type: "MISCELANEO", brand: ""},
+            {name: "JARRA", description: "PARA REFRIGERADOR COLOR TRANSPARENTE TAPA BLANCA", code: "JR1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.17.32-PM.jpeg?id=RV4OgQ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlJWNE9nUSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMzkwNn0.ZHP5aV7GlzeOnd52muvVCFkvrdkEoHxWtAyfRUN2q9Q&signature=ca2007ccaf4373073ed145a31b720b8b531a7821cbeec553a04f4bb4326ae648", type: "MISCELANEO", brand: ""},
+            {name: "JARRA CAFETERA", description: "COLOR BLANCA DE 1.7LTS, ALTO 0.22 FRENTE 0.16 METROS", code: "JR2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-7.34.25-PM.jpeg?id=Oo0LXK&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik9vMExYSyIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg2MDExMX0.VWOAv1Hnw4IKvK_kQgHl6LsANW0BHr8YOixmd2qzBlc&signature=b9d3630ce5aa3e66ebddec68a6dce0bd8703c68628e0e9cc1fd19b30701b9061", type: "ELECTRÓNICO", brand: "TAURUS"},
+            {name: "JERGA", description: "VARIOS COLORES, FRENTE 0.83 ALTO 0.46 METROS", code: "JERG", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-4.35.30-PM.jpeg?id=4pj7GY&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRwajdHWSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0OTQ2M30.YtLfw-x1NXSkYkIWX2ChvphmzWtSTq1I6FDHYVDabCY&signature=fbbb985cce1e1bdcf30aa38209cc46ef06581c2ece29bc94c22eb5af89fe9c7f", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE BAÑO", description: "BASE OVALADA CON 2 DIFUSORES REDONDOS, ALTO 0.27 FRENTE 0.14", code: "LPB", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.15.32-PM.jpeg?id=JW06jJ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkpXMDZqSiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NTcxM30.u4jRPKe4DMybIiciuf5FJzvm0OBCJv_vtZUpcH7xapY&signature=108b563c3bfb01aa063ef207e5f0a076a52791ed53366263357f42dcdc8aa09c", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE BURO MODELO 1", description: "BASE NEGRA Y PANTALLA CIRCULAR NEGRA, DIAMETRO 0.39 ALTO 0.48 METROS", code: "LB1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-11.54.55-AM.jpeg?id=0DMKDA&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBETUtEQSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMjU4MX0.2EauHAvyUs5YarIpMazXpz1tHNccP0rF52QhebHUDHo&signature=5050fc6972814f5f5d085b7070075d8be48c6780d4126a6e7e6ba3b88b32b87b", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE BURO MODELO 2", description: "BASE NEGRA CON PANTALLA BLANCA, ALTO 0.56 DIAMETRO B. 0.16 DIAMETRO P. 0.21 METROS", code: "LB2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.47.44-PM.jpeg?id=8Rkvl5&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhSa3ZsNSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzOTM4Mn0.iF8cr-oMKQeIvEzfHB0z3U7v0Twi4Cb-IMrlswnzvow&signature=d2664bd733f23ae11f8ecb2944943e420fb4bc829118b1d187105e440c3248bd", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE BURO MODELO 3", description: "BASE BLANCA PANTALLA CIRCULAR BLANCA, ALTO 0.55 DIAMETRO B.0.20 DIAMETRO P. 0.25", code: "LB3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.49.27-PM.jpeg?id=RV4XOJ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlJWNFhPSiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzOTQ3M30.wTvR0YT_93iZuCRXHeuk352hnv1Q-rsMI-gDxUgawKg&signature=0748df1c92924c986d32e0f5661098e351655f991e537884cd3cfe6a127f9995", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE BURO MODELO 4", description: "BASE NEGRA CON PANTALLA CONICA NEGRA, ALTO 0.50 DIAMETRO 0.12 DIAMETRO P. 0.25 METROS", code: "LB4", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-1.51.19-PM.jpeg?id=dkALLz&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRrQUxMeiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzOTU4Nn0.KsTSFvuyUHBV8D6FPTCiSLncsMXk6n7AoSI1imcnUWI&signature=14ed12ae2326fa74dac698112ca397f166853604c8bd50eec0a84d4e263fb7a2", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE PARED MODELO 1", description: "BASE NEGRA CON 2 PANTALLAS BLANCAS, ALTO 0.62 DIAMETRO 0.18 METROS", code: "LPP1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-12.45.39-PM.jpeg?id=pkAaE8&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InBrQWFFOCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzNTYwNH0.nCTjy9AluwRcdfvnkmb5IN8rWWzF6CzVc11-OXX0F5g&signature=88d1ae97c672e92b073a537abcf6fa5a3d752943dc533e986f49d4fa99c74102", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE PARED MODELO 2", description: "BASE NEGRA CON PANTALLA BLANCA CONICA, ALTO 0.34 DIAMETRO PANTALLA 0.15 METROS", code: "LPP2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.29.22-PM.jpeg?id=YxdZQ5&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ill4ZFpRNSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NjIyM30.D-O6QUBbBKJyq8ws0NOTvtjZdeeX-QIm8RbneGra_bM&signature=5547f8b4e86e83d22252b23795f60529a465b56f3a6152a20c269191078075d9", type: "MUEBLE", brand: ""},
+            {name: "LAMPARA DE PISO MODELO 1", description: "BASE CONICA NEGRA CON PANTALLA BLANCA, ALTO 1.015 DIAMETRO 0.54 METROS", code: "LP1", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-11.33.16-AM.jpeg?id=lMAGKN&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImxNQUdLTiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDgzMTMyNX0.hqgfaM9eaNdggNG1ffOcTMTzO3NapaWWnEV7F1XVn8k&signature=aa7d919258719c8da06ecda94a45fc8da1116d7bebb4d7a31e010c642756b2c6", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE PISO MODELO 2", description: "COLOR BEIGE DE BARRO PANTALLA BLANCA, ALTO 0.78 DIAMETRO P. 0.34 DIAMETRO B. 0.14 METROS", code: "LP2", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-3.01.30-PM.jpeg?id=V48GGj&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlY0OEdHaiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MzgzOH0.qES71IBASc9QM0YxaehrZ1Rt-JtTYbvoOiOGjb5v6No&signature=84e793597cf58261da31a0fb50cc6143ff93f95e359a12bebda099bb3745b351", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE PISO MODELO 3", description: "BASE NEGRA Y PANTALA BLANCA CILINDRICA, ALTO 1.30 DIAMETRO 0.37 METROS", code: "LP3", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-4.53.25-PM.jpeg?id=Oo07GR&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik9vMDdHUiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1MDQzNn0.6zRaakd1CsS6s6Vqq64GYOCpREcmIS2eh-mEqSbS51I&signature=cedff8b6720f622164b2963e1fc37b0a85d67c42e58863575cf74765e99ba3da", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA DE PISO MODELO 4", description: "LAMPARA EN L CON PANTALLA BLANCA, ALTO 1.50,DIAMETRO PANTALLA 0.30 PROF 0.56 METROS", code: "LP4", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.36.47-PM.jpeg?id=GQ0rgL&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkdRMHJnTCIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1Njc5MX0.dqiE33zxqGvDlW7FN62VgbYz0K94Yn_PqR9qiI406us&signature=73e8929ecb8e822538c889ba5773853ce060ae9382f3f57956b013efc1e27d12", type: "MISCELANEO", brand: ""},
+            {name: "LAMPARA ESQUINERA", description: "COLOR BEIGE CON PANTALLA CUADRADA, ALTO 0.62 PANTALLA 0.34 PROF 0.14 METROS", code: "LE", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-2.09.58-PM.jpeg?id=okO6jb&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im9rTzZqYiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg0MDczOH0.NWz1qbAk_xaerrxZiJQetiW9Ocd3i5BcTKVVYttGCOs&signature=196ffa019fcb54d6f0d318f2fdb9442aa52b3df7ca7bf3c9bda2a748bff4b416", type: "MISCELANEO", brand: ""},
+            {name: "MADERA BASE DE CAMA", description: "TIPO MADERA FLEXIBLE COLOR BEIGE, ALTO 0.95 FRENTE 0.05 METROS", code: "MBC", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-5.11.13-PM.jpeg?id=Wj0zOQ&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IldqMHpPUSIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1MTc1OX0.gmpgmp4TAmSZwrp8VNw2LFa4eKhkTh55wDayFMgLKgE&signature=fdcb1a78d80f46ec71a0b3148a2e55232ffba178579c0ea50e84dc7769f4bcc3", type: "MISCELANEO", brand: ""},
+            {name: "MAQUINA DE COSER", description: "COLOR BLANCO, ALTO O.77 PROF 0.44 FRENTE 1.21 METROS", code: "MQC", photo: "https://storage.tally.so/private/WhatsApp-Image-2026-02-11-at-6.55.34-PM.jpeg?id=B2B1bN&accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkIyQjFiTiIsImZvcm1JZCI6IktZMWp6QSIsImlhdCI6MTc3MDg1NzcxNn0.4NMGLHXXTjI7W_6e33FJrH2eA8_pSQi2vdPf-k-tQco&signature=c5dd2c97b9ac7e1348ff29c4ba40a68e55d4edce7c488d3c4d3aa9d6f43c09c5", type: "ELECTRÓNICO", brand: "FURUTA"}
+        ];
+
+        let currentFilter = 'all';
+        let filteredProducts = [...products];
+
+        function normalizeText(text) {
+            return text.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .trim();
+        }
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchInput').value;
+            const normalizedSearch = normalizeText(searchTerm);
+            
+            if (searchTerm === '') {
+                filteredProducts = currentFilter === 'all' ? [...products] : products.filter(p => p.type === currentFilter);
+            } else {
+                let baseProducts = currentFilter === 'all' ? products : products.filter(p => p.type === currentFilter);
+                
+                filteredProducts = baseProducts.filter(product => {
+                    return normalizeText(product.name).includes(normalizedSearch) ||
+                           normalizeText(product.description).includes(normalizedSearch) ||
+                           normalizeText(product.code).includes(normalizedSearch) ||
+                           normalizeText(product.type).includes(normalizedSearch) ||
+                           normalizeText(product.brand).includes(normalizedSearch);
+                });
+            }
+            
+            displayProducts();
+            updateResultsInfo(searchTerm);
+        }
+
+        function filterByType(type) {
+            currentFilter = type;
+            
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            searchProducts();
+        }
+
+        function displayProducts() {
+            const container = document.getElementById('tableContainer');
+            
+            if (filteredProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <h3>No se encontraron resultados</h3>
+                        <p>Intenta con otros términos de búsqueda</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Tipo</th>
+                                <th>Marca</th>
+                                <th class="photo-cell">Fotografía</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredProducts.map(product => `
+                                <tr>
+                                    <td><span class="code-badge">${product.code}</span></td>
+                                    <td><strong>${product.name}</strong></td>
+                                    <td>${product.description}</td>
+                                    <td>${product.type || '-'}</td>
+                                    <td>${product.brand || '-'}</td>
+                                    <td class="photo-cell">
+                                        <a class="photo-link" onclick="openModal('${product.photo.replace(/'/g, "\\'")}', '${product.name.replace(/'/g, "\\'")}')">
+                                            📷 Ver foto
+                                        </a>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function openModal(photoUrl, productName) {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('modalImage');
+            img.src = photoUrl;
+            img.alt = productName;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+        }
+
+        function updateResultsInfo(searchTerm) {
+            const info = document.getElementById('resultsInfo');
+            const count = document.getElementById('resultsCount');
+            const term = document.getElementById('searchTerm');
+            
+            if (searchTerm || currentFilter !== 'all') {
+                info.style.display = 'flex';
+                count.textContent = `${filteredProducts.length} resultado${filteredProducts.length !== 1 ? 's' : ''} encontrado${filteredProducts.length !== 1 ? 's' : ''}`;
+                
+                if (searchTerm) {
+                    term.textContent = `para "${searchTerm}"`;
+                } else {
+                    term.textContent = '';
+                }
+            } else {
+                info.style.display = 'none';
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            currentFilter = 'all';
+            
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            document.querySelector('.filter-tag').classList.add('active');
+            
+            searchProducts();
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        displayProducts();
+    </script>
+</body>
+</html>rm = document.getElementById('searchTerm');
+            
+            count.textContent = `${filteredProducts.length} resultado${filteredProducts.length !== 1 ? 's' : ''} encontrado${filteredProducts.length !== 1 ? 's' : ''}`;
+            
+            if (searchTerm) {
+                term.textContent = `para "${searchTerm}"`;
+                info.style.display = 'flex';
+            } else if (currentFilter !== 'all') {
+                term.textContent = `en ${currentFilter}`;
+                info.style.display = 'flex';
+            } else {
+                info.style.display = 'none';
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            currentFilter = 'all';
+            
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            document.querySelector('.filter-tag').classList.add('active');
+            
+            searchProducts();
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            if (e.target.value === '') {
+                searchProducts();
+            }
+        });
+
+        window.onload = function() {
+            displayProducts();
+        };
+    </script>
+</body>
+</html>
+
